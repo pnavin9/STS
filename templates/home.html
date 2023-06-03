@@ -1,0 +1,75 @@
+<div class="login-box">
+  <form id="myForm" action="{{ url_for('predict_datapoint')}}" method="post">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css')}}" >
+    <h2>STS</h2>
+    <div>
+      <div class="user-box">
+        <input type="text" name="text1" id="text1" required="" {% if text1 %} value="{{ text1 }}" {% endif %}>
+        <label>text 1</label>
+      </div>
+      <div class="user-box">
+        <input type="text" name="text2" id="text2" required="" {% if text2 %} value="{{ text2 }}" {% endif %}>
+        <label>text 2</label>
+      </div>
+      <a button  id="submitButton" class="btn btn--radius-2 btn--blue" type="button" onclick="submitForm()">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        Submit</button>
+      </a>
+      <br>
+      <br>
+      <div id="results">{% if results %}{{ results }}{% else %}{% endif %}</div>
+    </div>
+  </form>
+
+  <script>
+    function submitForm() {
+      var text1Input = document.getElementById('text1');
+      var text2Input = document.getElementById('text2');
+      var text1Value = text1Input.value;
+      var text2Value = text2Input.value;
+      var form = document.getElementById('myForm');
+      var submitButton = document.getElementById('submitButton');
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+      });
+  
+      // Disable the submit button to prevent multiple submissions
+      submitButton.disabled = true;
+  
+      // Perform your desired actions with the form data
+      // For example, you can make an AJAX request to submit the form data asynchronously
+      // Here's a basic example using fetch API
+      fetch(form.action, {
+        method: form.method,
+        body: new FormData(form)
+      })
+      .then(function(response) {
+        return response.text();
+      })
+      .then(function(responseText) {
+        // Set the input values to the newly entered values
+        text1Input.value = text1Value;
+        text2Input.value = text2Value;
+  
+        // Update the results element with the response text
+        document.getElementById('results').innerHTML = responseText;
+  
+        // Clear the input fields
+        text1Input.value = '';
+        text2Input.value = '';
+      })
+      .catch(function(error) {
+        console.error(error);
+      })
+      .finally(function() {
+        // Re-enable the submit button after the response is received
+        submitButton.disabled = false;
+      });
+    }
+  </script>
+  
+  
+</div>
